@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - qianjing
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: "\u80CC\u666F"
+    uniqueID: 391640555
+    locked: 0
+  - name: "\u540E"
+    uniqueID: 2909321619
+    locked: 0
+  - name: "\u4E2D"
+    uniqueID: 1991630637
+    locked: 0
+  - name: "\u524D"
+    uniqueID: 2112558889
+    locked: 0
+  - name: "\u6700\u524D\u7684\u5BB6\u5177"
+    uniqueID: 3093057543
+    locked: 0
+  - name: "\u4EBA\u7269"
+    uniqueID: 2207768657
+    locked: 0
