@@ -1,17 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PhysicsCheck : MonoBehaviour
 {
-    [Header("◊¥Ã¨")]
+    [Header("Áä∂ÊÄÅ")]
     public bool isGround;
 
-    [Header("ºÏ≤‚≤Œ ˝")]
+    [Header("Ê£ÄÊµãËåÉÂõ¥")]
     public float checkRaduis;
     public LayerMask groundLayer;
     public Vector2 bottomOffset;
-    
+    public Action TouchGround;
+    public Action LeaveGround;
+
     private void Update()
     {
         Check();
@@ -19,8 +22,16 @@ public class PhysicsCheck : MonoBehaviour
 
     public void Check()
     {
-        //ºÏ≤‚µÿ√Ê
-        isGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, checkRaduis, groundLayer);
+        bool newStatus = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, checkRaduis, groundLayer);
+        if (isGround && !newStatus)
+        {
+            LeaveGround?.Invoke();
+        }
+        else if (!isGround && newStatus)
+        {
+            TouchGround?.Invoke();
+        }
+        isGround = newStatus;
     }
 
     private void OnDrawGizmosSelected()

@@ -1,47 +1,44 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public PlayerInputControl inputControl;
+    public static PlayerController instance;
+    public float groundJumpVelocity;
+    public float wallJumpHorizontalVelocity;
+    public float wallJumpVerticalVelocity;
+    public float doubleJumpVelocity;
+    public float horziontalMoveSpeed;
+
     private Rigidbody2D rb;
     public Vector2 inputDirection;
-    public bool isRun = false; 
-    [Header("基本参数")]
-    public float speed;
-    public float jumpForce;
+    private float faceDirection = 1;
     private PhysicsCheck physicsCheck;
-    
+    [SerializeField] private EJumpState jumpState = EJumpState.Ground;
+
+
+    private const float releaseJumpSpeedDeclineRate = 0.8f;
 
     private void Awake()
     {
+        instance = this;
         rb = GetComponent<Rigidbody2D>();
-        inputControl = new PlayerInputControl();
-
+        
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        
         physicsCheck = GetComponent<PhysicsCheck>();
-
-        inputControl.Gameplay.Jump.started += Jump;
-
-        inputControl.Gameplay.Run.started += RunStarted;
-        inputControl.Gameplay.Run.canceled += RunCanceled;
-    }
-
-    private void OnEnable()
-    {
-        inputControl.Enable();
-    }
-
-    private void Ondisable()
-    {
-        inputControl.Disable();
+        physicsCheck.TouchGround += OnTouchGround;
     }
 
     private void Update()
     {
-        inputDirection = inputControl.Gameplay.Move.ReadValue<Vector2>();
+        transform.localScale = new Vector3(faceDirection, 1, 1);
     }
 
     private void FixedUpdate()
@@ -49,39 +46,70 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
-    public void Move()
+    public void SetMoveInput(Vector2 inputDirection)
     {
-        rb.velocity = new Vector2(Time.deltaTime * speed * inputDirection.x, rb.velocity.y);
+        this.inputDirection = inputDirection;
+    }
 
-        int faceDir = (int)transform.localScale.x;
-
-        if (inputDirection.x > 0)
-            faceDir = 1;
-        if (inputDirection.x < 0)
-            faceDir = -1;
-
-        if (isRun == true)
+    private void Move()
+    {
+        if (!Mathf.Approximately(inputDirection.x, 0))
         {
-            rb.velocity += new Vector2(1.2f * Time.deltaTime * speed * inputDirection.x,0);
+            faceDirection = inputDirection.x;
         }
-        //人物翻转
-        transform.localScale = new Vector3(faceDir, 1, 1);
+        float horizontalSpeed = horziontalMoveSpeed * inputDirection.x;
+        rb.velocity = new Vector2(horizontalSpeed, rb.velocity.y);
+        Debug.Log(rb.velocity);
     }
 
-    private void RunStarted(InputAction.CallbackContext context)
+    private void OnTouchGround()
     {
-        isRun = true;
+        jumpState = EJumpState.Ground;
     }
-    private void RunCanceled(InputAction.CallbackContext context)
+
+    public void OnPressJump()
     {
-        isRun = false;
+        if (jumpState == EJumpState.Ground)
+        {
+            jumpState = EJumpState.AfterFirstJump;
+            rb.velocity = new Vector2(rb.velocity.x, groundJumpVelocity);
+        }
+        else if (jumpState == EJumpState.WallLeft)
+        {
+            jumpState = EJumpState.AfterFirstJump;
+            rb.velocity = new Vector2(wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
+        }
+        else if (jumpState == EJumpState.WallRight)
+        {
+            jumpState = EJumpState.AfterFirstJump;
+            rb.velocity = new Vector2(-wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
+        }
+        else if (jumpState == EJumpState.AfterFirstJump)
+        {
+            jumpState = EJumpState.Exhausted;
+            rb.velocity = new Vector2(rb.velocity.x, doubleJumpVelocity);
+        }
     }
-    private void Jump(InputAction.CallbackContext context)
+
+    public void OnReleaseJump()
     {
-        //Debug.Log("Jump");
-        if(physicsCheck.isGround)
-            rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        if (rb.velocity.y > 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -rb.velocity.y * releaseJumpSpeedDeclineRate);
+        }
+    }
+
+    public void Attack()
+    {
         
     }
+}
 
+public enum EJumpState
+{
+    Ground,
+    WallLeft,
+    WallRight,
+    AfterFirstJump,
+    Exhausted,
 }
