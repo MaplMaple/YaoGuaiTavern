@@ -37,5 +37,9 @@ public class InputManager : MonoBehaviour
         {
             PlayerController.instance.OnReleaseJump();
         }
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            PlayerController.instance.OnPressAttack();
+        }
     }
 }

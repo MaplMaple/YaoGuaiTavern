@@ -93,6 +93,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -815,7 +828,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 128
+        y: 192
         width: 64
         height: 64
       alignment: 7
@@ -835,7 +848,7 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_35"
       rect:
         serializedVersion: 2
-        x: 64
+        x: 0
         y: 128
         width: 64
         height: 64
@@ -856,7 +869,7 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_36"
       rect:
         serializedVersion: 2
-        x: 128
+        x: 64
         y: 128
         width: 64
         height: 64
@@ -877,7 +890,7 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_37"
       rect:
         serializedVersion: 2
-        x: 192
+        x: 128
         y: 128
         width: 64
         height: 64
@@ -898,8 +911,8 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_38"
       rect:
         serializedVersion: 2
-        x: 0
-        y: 64
+        x: 192
+        y: 128
         width: 64
         height: 64
       alignment: 7
@@ -919,7 +932,7 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_39"
       rect:
         serializedVersion: 2
-        x: 64
+        x: 0
         y: 64
         width: 64
         height: 64
@@ -940,8 +953,8 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_40"
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 64
+        y: 64
         width: 64
         height: 64
       alignment: 7
@@ -961,7 +974,7 @@ TextureImporter:
       name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_41"
       rect:
         serializedVersion: 2
-        x: 64
+        x: 0
         y: 0
         width: 64
         height: 64
@@ -974,6 +987,27 @@ TextureImporter:
       bones: []
       spriteID: b061dd2cefc363a48ba70f6b68173b6a
       internalID: -1805593529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u4E3B\u89D2\u7CBE\u7075\u56FE_42"
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90de8b672d73aa3428873d162fa5a612
+      internalID: 294979031
       vertices: []
       indices: 
       edges: []
@@ -1026,6 +1060,7 @@ TextureImporter:
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_4": -1692224484
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_40": 277907353
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_41": -1805593529
+      "\u4E3B\u89D2\u7CBE\u7075\u56FE_42": 294979031
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_5": -182774176
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_6": 1034432948
       "\u4E3B\u89D2\u7CBE\u7075\u56FE_7": 742964265
