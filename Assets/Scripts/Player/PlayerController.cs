@@ -33,9 +33,9 @@ public class PlayerController : MonoBehaviour
     private float attackTimer = 0;
     private const float wallJumpDuration = 0.15f;
     private PhysicsCheck physicsCheck;
-    [SerializeField] private EJumpState jumpState = EJumpState.Ground;
-    [SerializeField] private EWallHoldingState wallHoldingState = EWallHoldingState.None;
-    [SerializeField] private EDashState dashState = EDashState.Charged;
+    [SerializeField] public EJumpState jumpState = EJumpState.Ground;
+    [SerializeField] public EWallHoldingState wallHoldingState = EWallHoldingState.None;
+    [SerializeField] public EDashState dashState = EDashState.Charged;
 
     // Gizmos绘制相关
     private bool shouldDrawGizmos = false;
@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     private const float gizmosDrawDuration = 1.0f;
     private const float releaseJumpSpeedDeclineRate = 0.8f;
     private bool isAfterWallJumping = false;
-    private bool isDashing = false;
+    public bool isDashing = false;
     private float dashDirection = 1f;
     private CancellationTokenSource wallJumpCancellationTokenSource = null;
     private CancellationTokenSource dashCancellationTokenSource = null;
