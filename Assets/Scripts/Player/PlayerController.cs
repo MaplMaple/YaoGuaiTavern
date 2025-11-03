@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float doubleJumpVelocity;
     public float horziontalMoveSpeed;
     public float attackInterval;
+    public float normalGravityScale;
+    public float wallHoldingGravityScale;
     public EAttackState attackState = EAttackState.Idle;
     public bool showAttackGizmos = true;
     public GameObject attackEffect;
@@ -25,8 +28,10 @@ public class PlayerController : MonoBehaviour
     public Vector2 inputDirection;
     private float faceDirection = 1;
     private float attackTimer = 0;
+    private const float wallJumpDuration = 0.25f;
     private PhysicsCheck physicsCheck;
     [SerializeField] private EJumpState jumpState = EJumpState.Ground;
+    [SerializeField] private EWallHoldingStatus wallHoldingStatus = EWallHoldingStatus.None;
 
     // Gizmos绘制相关
     private bool shouldDrawGizmos = false;
@@ -34,8 +39,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 gizmosHitboxSize;
     private float gizmosStartTime;
     private const float gizmosDrawDuration = 1.0f;
-
     private const float releaseJumpSpeedDeclineRate = 0.8f;
+    private bool isAfterWallJumping = false;
+    private CancellationTokenSource wallHoldingCancellationTokenSource = null;
+    private CancellationToken wallHoldingCancellationToken = CancellationToken.None;
 
     private void Awake()
     {
@@ -48,13 +55,19 @@ public class PlayerController : MonoBehaviour
 
         physicsCheck = GetComponent<PhysicsCheck>();
         physicsCheck.TouchGround += OnTouchGround;
+        physicsCheck.LeaveLeftWall += OnHoldWallEnd;
+        physicsCheck.LeaveRightWall += OnHoldWallEnd;
     }
 
     private void Update()
     {
         transform.localScale = new Vector3(faceDirection, 1, 1);
         UpdateAttack();
+        UpdateWallHolding();
         UpdateGizmosTimer();
+        Debug.Log(jumpState);
+        Debug.Log($"isAfterWallJumping {isAfterWallJumping}");
+        Debug.Log($"wallHoldingStatus {wallHoldingStatus}");
     }
 
     private void UpdateGizmosTimer()
@@ -76,8 +89,14 @@ public class PlayerController : MonoBehaviour
         {
             faceDirection = inputDirection.x;
         }
-        float horizontalSpeed = horziontalMoveSpeed * inputDirection.x;
-        rb.velocity = new Vector2(horizontalSpeed, rb.velocity.y);
+        if (isAfterWallJumping)
+        {
+            // rb.velocity = new Vector2(horziontalMoveSpeed * 1, rb.velocity.y);
+        }
+        else
+        {
+            rb.velocity = new Vector2(horziontalMoveSpeed * inputDirection.x, rb.velocity.y);
+        }
     }
 
     private void UpdateAttack()
@@ -91,6 +110,44 @@ public class PlayerController : MonoBehaviour
                 attackTimer = 0;
             }
         }
+    }
+
+    private void UpdateWallHolding()
+    {
+        if (wallHoldingStatus == EWallHoldingStatus.None && isAfterWallJumping == false)
+        {
+            if (physicsCheck.IsLeftWall && inputDirection.x < 0)
+            {
+                wallHoldingStatus = EWallHoldingStatus.Left;
+                rb.velocity = new Vector2(0, 0);
+                jumpState = EJumpState.HoldingWall;
+                rb.gravityScale = wallHoldingGravityScale;
+            }
+            else if (physicsCheck.IsRightWall && inputDirection.x > 0)
+            {
+                wallHoldingStatus = EWallHoldingStatus.Right;
+                rb.velocity = new Vector2(0, 0);
+                jumpState = EJumpState.HoldingWall;
+                rb.gravityScale = wallHoldingGravityScale;
+            }
+        }
+        else if (wallHoldingStatus == EWallHoldingStatus.Left || wallHoldingStatus == EWallHoldingStatus.Right)
+        {
+            if (!isAfterWallJumping)
+            {
+                if (!((physicsCheck.IsLeftWall && inputDirection.x <= 0) || (physicsCheck.IsRightWall && inputDirection.x >= 0)))
+                {
+                    wallHoldingStatus = EWallHoldingStatus.None;
+                    jumpState = physicsCheck.IsGround ? EJumpState.Ground : EJumpState.AfterFirstJumpInAir;
+                    rb.gravityScale = normalGravityScale;
+                }
+            }
+        }
+    }
+
+    private void OnHoldWallEnd()
+    {
+        rb.gravityScale = normalGravityScale;
     }
 
     public void SetMoveInput(Vector2 inputDirection)
@@ -110,15 +167,19 @@ public class PlayerController : MonoBehaviour
             jumpState = EJumpState.AfterFirstJumpInAir;
             rb.velocity = new Vector2(rb.velocity.x, groundJumpVelocity);
         }
-        else if (jumpState == EJumpState.HoldingLeftWall)
+        else if (jumpState == EJumpState.HoldingWall)
         {
-            jumpState = EJumpState.AfterFirstJumpInAir;
-            rb.velocity = new Vector2(wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
-        }
-        else if (jumpState == EJumpState.HoldingRightWall)
-        {
-            jumpState = EJumpState.AfterFirstJumpInAir;
-            rb.velocity = new Vector2(-wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
+            if (wallHoldingStatus == EWallHoldingStatus.Left)
+            {
+                jumpState = EJumpState.AfterFirstJumpInAir;
+                rb.velocity = new Vector2(wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
+            }
+            else if (wallHoldingStatus == EWallHoldingStatus.Right)
+            {
+                jumpState = EJumpState.AfterFirstJumpInAir;
+                rb.velocity = new Vector2(-wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
+            }
+            AfterWallJumping().Forget();
         }
         else if (jumpState == EJumpState.AfterFirstJumpInAir || jumpState == EJumpState.AfterBouncingInAir)
         {
@@ -266,13 +327,27 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawWireCube(gizmosHitboxCenter, gizmosHitboxSize);
         }
     }
+
+    private async UniTask AfterWallJumping()
+    {
+        if (isAfterWallJumping) return;
+        isAfterWallJumping = true;
+        await UniTask.Delay((int)(wallJumpDuration * 1000));
+        isAfterWallJumping = false;
+    }
+}
+
+public enum EWallHoldingStatus
+{
+    None,
+    Left,
+    Right,
 }
 
 public enum EJumpState
 {
     Ground,
-    HoldingLeftWall,
-    HoldingRightWall,
+    HoldingWall,
     AfterFirstJumpInAir,
     AfterBouncingInAir,
     ExhaustedInAir,

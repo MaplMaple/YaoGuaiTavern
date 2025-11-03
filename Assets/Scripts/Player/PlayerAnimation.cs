@@ -126,7 +126,7 @@ public class PlayerAnimation : MonoBehaviour
     {
         anim.SetFloat("velocityX", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("velocityY", rb.velocity.y);
-        anim.SetBool("isGround", physicsCheck.isGround);
+        anim.SetBool("isGround", physicsCheck.IsGround);
         anim.SetInteger("attackState", (int)playerController.attackState);
     }
 
