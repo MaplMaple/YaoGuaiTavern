@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 53c6ea20c394e4f4d8728743637d61e8
+guid: 8ab95adb40a36d644ad60f70fd29f8c3
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -93,123 +93,89 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: player_attack_effect_0
+      name: Character landing dust_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 112
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d0217aab0f50464697fc477eee1c3ab
-      internalID: -363446578
+      spriteID: 429f8217d52ff8846baeadd59754d026
+      internalID: -1074255074
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_attack_effect_1
+      name: Character landing dust_1
       rect:
         serializedVersion: 2
-        x: 112
+        x: 64
         y: 0
-        width: 112
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9150379df854c0a43af8e8b8c3a211a0
-      internalID: -1183516847
+      spriteID: 1beab0290d57b41449af78b7c75b977e
+      internalID: -1200685883
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_attack_effect_2
+      name: Character landing dust_2
       rect:
         serializedVersion: 2
-        x: 224
+        x: 128
         y: 0
-        width: 112
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b1264b6f2f1b93e419297025b3140105
-      internalID: 337862723
+      spriteID: 1c5616bfb624ceb4e9e5bd239396bbbc
+      internalID: -1302435191
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: player_attack_effect_3
+      name: Character landing dust_3
       rect:
         serializedVersion: 2
-        x: 336
+        x: 192
         y: 0
-        width: 112
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 64
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9cafb3f2db1a2c547acd692bc9341acb
-      internalID: -1150956897
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: player_attack_effect_4
-      rect:
-        serializedVersion: 2
-        x: 448
-        y: 0
-        width: 112
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f72d6dc2e8ef5cb449e576b7af66ede6
-      internalID: -1966957421
+      spriteID: a749969388ccd9a488986f9a573fd54f
+      internalID: -1706413881
       vertices: []
       indices: 
       edges: []
@@ -225,11 +191,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      player_attack_effect_0: -363446578
-      player_attack_effect_1: -1183516847
-      player_attack_effect_2: 337862723
-      player_attack_effect_3: -1150956897
-      player_attack_effect_4: -1966957421
+      Character landing dust_0: -1074255074
+      Character landing dust_1: -1200685883
+      Character landing dust_2: -1302435191
+      Character landing dust_3: -1706413881
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
