@@ -41,5 +41,9 @@ public class InputManager : MonoBehaviour
         {
             PlayerController.instance.OnPressAttack();
         }
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            PlayerController.instance.OnPressDash();
+        }
     }
 }

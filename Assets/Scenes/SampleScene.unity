@@ -1314,9 +1314,12 @@ MonoBehaviour:
   wallJumpVerticalVelocity: 15
   doubleJumpVelocity: 15
   horziontalMoveSpeed: 10
+  dashSpeed: 25
+  dashDuration: 0.2
   attackInterval: 0.4
   normalGravityScale: 3.5
   wallHoldingGravityScale: 1.5
+  dashGravityScale: 0
   attackState: 0
   showAttackGizmos: 1
   attackEffect: {fileID: 1895943332}
@@ -1326,7 +1329,8 @@ MonoBehaviour:
     m_Bits: 256
   inputDirection: {x: 0, y: 0}
   jumpState: 0
-  wallHoldingStatus: 0
+  wallHoldingState: 0
+  dashState: 0
 --- !u!114 &544293948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3217,7 +3221,7 @@ Tilemap:
       - {fileID: -1235853936, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 1918509905, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 19753248, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
-      m_AnimationSpeed: 7
+      m_AnimationSpeed: 7.0000005
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -30, y: 18, z: 0}
@@ -15749,8 +15753,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2112558889
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -363446578, guid: 53c6ea20c394e4f4d8728743637d61e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

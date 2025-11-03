@@ -15,9 +15,12 @@ public class PlayerController : MonoBehaviour
     public float wallJumpVerticalVelocity;
     public float doubleJumpVelocity;
     public float horziontalMoveSpeed;
+    public float dashSpeed = 25f; // 5米 / 0.2秒 = 25 m/s
+    public float dashDuration = 0.2f;
     public float attackInterval;
     public float normalGravityScale;
     public float wallHoldingGravityScale;
+    public float dashGravityScale = 0f; // 冲刺时的重力缩放
     public EAttackState attackState = EAttackState.Idle;
     public bool showAttackGizmos = true;
     public GameObject attackEffect;
@@ -28,10 +31,11 @@ public class PlayerController : MonoBehaviour
     public Vector2 inputDirection;
     private float faceDirection = 1;
     private float attackTimer = 0;
-    private const float wallJumpDuration = 0.25f;
+    private const float wallJumpDuration = 0.15f;
     private PhysicsCheck physicsCheck;
     [SerializeField] private EJumpState jumpState = EJumpState.Ground;
-    [SerializeField] private EWallHoldingStatus wallHoldingStatus = EWallHoldingStatus.None;
+    [SerializeField] private EWallHoldingState wallHoldingState = EWallHoldingState.None;
+    [SerializeField] private EDashState dashState = EDashState.Charged;
 
     // Gizmos绘制相关
     private bool shouldDrawGizmos = false;
@@ -41,8 +45,10 @@ public class PlayerController : MonoBehaviour
     private const float gizmosDrawDuration = 1.0f;
     private const float releaseJumpSpeedDeclineRate = 0.8f;
     private bool isAfterWallJumping = false;
-    private CancellationTokenSource wallHoldingCancellationTokenSource = null;
-    private CancellationToken wallHoldingCancellationToken = CancellationToken.None;
+    private bool isDashing = false;
+    private float dashDirection = 1f;
+    private CancellationTokenSource wallJumpCancellationTokenSource = null;
+    private CancellationTokenSource dashCancellationTokenSource = null;
 
     private void Awake()
     {
@@ -59,15 +65,26 @@ public class PlayerController : MonoBehaviour
         physicsCheck.LeaveRightWall += OnHoldWallEnd;
     }
 
+    private void OnDestroy()
+    {
+        // 清理CancellationTokenSource，防止内存泄漏
+        wallJumpCancellationTokenSource?.Cancel();
+        wallJumpCancellationTokenSource?.Dispose();
+        dashCancellationTokenSource?.Cancel();
+        dashCancellationTokenSource?.Dispose();
+    }
+
     private void Update()
     {
         transform.localScale = new Vector3(faceDirection, 1, 1);
         UpdateAttack();
         UpdateWallHolding();
         UpdateGizmosTimer();
+        UpdateDashRecovery();
         Debug.Log(jumpState);
         Debug.Log($"isAfterWallJumping {isAfterWallJumping}");
-        Debug.Log($"wallHoldingStatus {wallHoldingStatus}");
+        Debug.Log($"wallHoldingStatus {wallHoldingState}");
+        Debug.Log($"dashState {dashState}, isDashing {isDashing}");
     }
 
     private void UpdateGizmosTimer()
@@ -89,7 +106,13 @@ public class PlayerController : MonoBehaviour
         {
             faceDirection = inputDirection.x;
         }
-        if (isAfterWallJumping)
+
+        if (isDashing)
+        {
+            // 冲刺期间保持冲刺速度和方向
+            rb.velocity = new Vector2(dashSpeed * dashDirection, 0);
+        }
+        else if (isAfterWallJumping)
         {
             // rb.velocity = new Vector2(horziontalMoveSpeed * 1, rb.velocity.y);
         }
@@ -114,35 +137,46 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateWallHolding()
     {
-        if (wallHoldingStatus == EWallHoldingStatus.None && isAfterWallJumping == false)
+        if (wallHoldingState == EWallHoldingState.None && !isAfterWallJumping)
         {
             if (physicsCheck.IsLeftWall && inputDirection.x < 0)
             {
-                wallHoldingStatus = EWallHoldingStatus.Left;
-                rb.velocity = new Vector2(0, 0);
-                jumpState = EJumpState.HoldingWall;
-                rb.gravityScale = wallHoldingGravityScale;
+                StartHoldingWall(EWallHoldingState.Left);
             }
             else if (physicsCheck.IsRightWall && inputDirection.x > 0)
             {
-                wallHoldingStatus = EWallHoldingStatus.Right;
-                rb.velocity = new Vector2(0, 0);
-                jumpState = EJumpState.HoldingWall;
-                rb.gravityScale = wallHoldingGravityScale;
+                StartHoldingWall(EWallHoldingState.Right);
             }
         }
-        else if (wallHoldingStatus == EWallHoldingStatus.Left || wallHoldingStatus == EWallHoldingStatus.Right)
+        else if (wallHoldingState != EWallHoldingState.None && !isAfterWallJumping)
         {
-            if (!isAfterWallJumping)
+            if (!((physicsCheck.IsLeftWall && inputDirection.x <= 0) || (physicsCheck.IsRightWall && inputDirection.x >= 0)))
             {
-                if (!((physicsCheck.IsLeftWall && inputDirection.x <= 0) || (physicsCheck.IsRightWall && inputDirection.x >= 0)))
-                {
-                    wallHoldingStatus = EWallHoldingStatus.None;
-                    jumpState = physicsCheck.IsGround ? EJumpState.Ground : EJumpState.AfterFirstJumpInAir;
-                    rb.gravityScale = normalGravityScale;
-                }
+                wallHoldingState = EWallHoldingState.None;
+                jumpState = physicsCheck.IsGround ? EJumpState.Ground : EJumpState.AfterFirstJumpInAir;
+                rb.gravityScale = normalGravityScale;
             }
         }
+    }
+
+    private void UpdateDashRecovery()
+    {
+        if (dashState == EDashState.Exhausted)
+        {
+            if (physicsCheck.IsGround)
+            {
+                dashState = EDashState.Charged;
+            }
+        }
+    }
+
+    private void StartHoldingWall(EWallHoldingState newWallHoldingState)
+    {
+        wallHoldingState = newWallHoldingState;
+        rb.velocity = new Vector2(0, 0);
+        jumpState = EJumpState.HoldingWall;
+        rb.gravityScale = wallHoldingGravityScale;
+        dashState = EDashState.Charged; // 贴墙时充能
     }
 
     private void OnHoldWallEnd()
@@ -169,12 +203,12 @@ public class PlayerController : MonoBehaviour
         }
         else if (jumpState == EJumpState.HoldingWall)
         {
-            if (wallHoldingStatus == EWallHoldingStatus.Left)
+            if (wallHoldingState == EWallHoldingState.Left)
             {
                 jumpState = EJumpState.AfterFirstJumpInAir;
                 rb.velocity = new Vector2(wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
             }
-            else if (wallHoldingStatus == EWallHoldingStatus.Right)
+            else if (wallHoldingState == EWallHoldingState.Right)
             {
                 jumpState = EJumpState.AfterFirstJumpInAir;
                 rb.velocity = new Vector2(-wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
@@ -198,6 +232,7 @@ public class PlayerController : MonoBehaviour
 
     public void HitBounce()
     {
+        dashState = EDashState.Charged;
         if (jumpState == EJumpState.AfterFirstJumpInAir || jumpState == EJumpState.AfterBouncingInAir || jumpState == EJumpState.ExhaustedInAir)
         {
             rb.velocity = new Vector2(rb.velocity.x, bounceVelocity);
@@ -328,16 +363,73 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnPressDash()
+    {
+        if (dashState == EDashState.Charged && !isDashing)
+        {
+            PerformDash().Forget();
+        }
+    }
+
+    private async UniTask PerformDash()
+    {
+        if (isDashing) return;
+
+        // 取消之前的冲刺（如果有）
+        dashCancellationTokenSource?.Cancel();
+        dashCancellationTokenSource?.Dispose();
+        dashCancellationTokenSource = new CancellationTokenSource();
+
+        // 开始冲刺
+        isDashing = true;
+        dashState = EDashState.Exhausted;
+        dashDirection = faceDirection;
+
+        // 保存原有重力并设置冲刺重力
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = dashGravityScale;
+
+        try
+        {
+            // 等待冲刺时间
+            await UniTask.Delay((int)(dashDuration * 1000), cancellationToken: dashCancellationTokenSource.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // 被取消时的处理
+        }
+        finally
+        {
+            // 结束冲刺
+            isDashing = false;
+            rb.gravityScale = originalGravity;
+        }
+    }
+
     private async UniTask AfterWallJumping()
     {
-        if (isAfterWallJumping) return;
+        // 如果已经在墙跳中，取消之前的
+        if (isAfterWallJumping)
+        {
+            wallJumpCancellationTokenSource?.Cancel();
+            wallJumpCancellationTokenSource?.Dispose();
+        }
+
+        wallJumpCancellationTokenSource = new CancellationTokenSource();
         isAfterWallJumping = true;
-        await UniTask.Delay((int)(wallJumpDuration * 1000));
+
+        await UniTask.Delay((int)(wallJumpDuration * 1000), cancellationToken: wallJumpCancellationTokenSource.Token);
+
         isAfterWallJumping = false;
     }
 }
 
-public enum EWallHoldingStatus
+public enum EDashState
+{
+    Charged,
+    Exhausted,
+}
+public enum EWallHoldingState
 {
     None,
     Left,
