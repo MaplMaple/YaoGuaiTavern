@@ -78,6 +78,14 @@ public class PhysicsCheck : MonoBehaviour
     public float checkRaduis;
     public LayerMask groundLayer;
     public LayerMask holdableWallLayer;
+    
+    [Header("可爬墙体Tag")]
+    [Tooltip("设置哪些墙体可以攀爬（留空则不使用Tag过滤）")]
+    public string climbableWallTag = "ClimbableWall";
+    
+    [Tooltip("是否启用Tag检测")]
+    public bool useTagFilter = true;
+    
     public List<Vector2> bottomOffsets;
     public List<Vector2> leftOffsets;
     public List<Vector2> rightOffsets;
@@ -107,7 +115,7 @@ public class PhysicsCheck : MonoBehaviour
             bool leftStatus = false;
             foreach (var offset in leftOffsets)
             {
-                if (Check(offset, holdableWallLayer))
+                if (CheckClimbableWall(offset))
                 {
                     leftStatus = true;
                     break;
@@ -118,7 +126,7 @@ public class PhysicsCheck : MonoBehaviour
             bool rightStatus = false;
             foreach (var offset in rightOffsets)
             {
-                if (Check(offset, holdableWallLayer))
+                if (CheckClimbableWall(offset))
                 {
                     rightStatus = true;
                     break;
@@ -138,6 +146,28 @@ public class PhysicsCheck : MonoBehaviour
     public bool Check(Vector2 offset, LayerMask layerMask)
     {
         return Physics2D.OverlapCircle((Vector2)transform.position + offset, checkRaduis, layerMask);
+    }
+    
+    /// <summary>
+    /// 检查可爬墙体（支持Tag过滤）
+    /// </summary>
+    public bool CheckClimbableWall(Vector2 offset)
+    {
+        Collider2D collider = Physics2D.OverlapCircle((Vector2)transform.position + offset, checkRaduis, holdableWallLayer);
+        
+        if (collider == null)
+        {
+            return false;
+        }
+        
+        // 如果启用了Tag过滤，则检查Tag
+        if (useTagFilter && !string.IsNullOrEmpty(climbableWallTag))
+        {
+            return collider.CompareTag(climbableWallTag);
+        }
+        
+        // 如果没有启用Tag过滤，则只要在Layer上就可以
+        return true;
     }
 
     private void OnDrawGizmosSelected()

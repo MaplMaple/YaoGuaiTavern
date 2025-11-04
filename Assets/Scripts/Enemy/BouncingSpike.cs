@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class BouncingSpike : MonoBehaviour, IHitableObject
 {
+    [Header("攻击设置")]
+    [Tooltip("是否为致命伤害（送回存档点）")]
+    public bool isFatal = false;
+    
     [SerializeField] private AudioClip _hitAudio;
     [SerializeField] private GameObject _hitEffect;
     public AudioClip hitAudio { get; set; }
@@ -11,7 +15,7 @@ public class BouncingSpike : MonoBehaviour, IHitableObject
     
     public void OnHit()
     {
-        PlayerController.instance.HitBounce();
+        // 弹跳逻辑现在由 PlayerController 在向下攻击时自动处理
     }
     
     private void OnCollisionEnter2D(Collision2D collision)
@@ -22,8 +26,16 @@ public class BouncingSpike : MonoBehaviour, IHitableObject
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null)
             {
-                // 传入尖刺的位置作为攻击者位置
-                player.OnTakeDamage(transform.position);
+                if (isFatal)
+                {
+                    // 致命伤害 - 直接送回存档点
+                    player.OnTakeFatalDamage(transform.position);
+                }
+                else
+                {
+                    // 普通伤害 - 击退
+                    player.OnTakeDamage(transform.position);
+                }
             }
         }
     }
@@ -36,8 +48,16 @@ public class BouncingSpike : MonoBehaviour, IHitableObject
             PlayerController player = collision.GetComponent<PlayerController>();
             if (player != null)
             {
-                // 传入尖刺的位置作为攻击者位置
-                player.OnTakeDamage(transform.position);
+                if (isFatal)
+                {
+                    // 致命伤害 - 直接送回存档点
+                    player.OnTakeFatalDamage(transform.position);
+                }
+                else
+                {
+                    // 普通伤害 - 击退
+                    player.OnTakeDamage(transform.position);
+                }
             }
         }
     }
