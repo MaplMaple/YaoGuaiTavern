@@ -130,6 +130,8 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetInteger("attackState", (int)playerController.attackState);
         anim.SetBool("isDashing", playerController.isDashing);
         anim.SetBool("isHoldingWall", playerController.wallHoldingState != EWallHoldingState.None);
+        anim.SetBool("isBeingHit", playerController.isBeingHit);
+        anim.SetBool("isInvincible", playerController.isInvincible);
     }
 
     private void HandleAttackAnimation()

@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 8743381340312162261}
   m_Layer: 9
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -439,17 +439,27 @@ MonoBehaviour:
   normalGravityScale: 3.5
   wallHoldingGravityScale: 1.5
   dashGravityScale: 0
+  damagedVelocity: {x: 10, y: 10}
+  hitPauseTime: 0.1
+  invincibleTime: 0.5
+  knockbackDuration: 0.3
   attackState: 0
+  isBeingHit: 0
+  isInvincible: 0
   showAttackGizmos: 1
   attackEffect: {fileID: 112449244410980289}
   attackCenter: {fileID: 8938116891921257159}
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
+  canDoubleJump: 1
+  canDash: 1
+  canWallHold: 1
   inputDirection: {x: 0, y: 0}
   jumpState: 0
   wallHoldingState: 0
   dashState: 0
+  isDashing: 0
 --- !u!114 &3069202409130028034
 MonoBehaviour:
   m_ObjectHideFlags: 0

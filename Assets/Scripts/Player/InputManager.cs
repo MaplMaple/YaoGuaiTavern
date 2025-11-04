@@ -37,11 +37,11 @@ public class InputManager : MonoBehaviour
         {
             PlayerController.instance.OnReleaseJump();
         }
-        if(Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.X))
         {
             PlayerController.instance.OnPressAttack();
         }
-        if(Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             PlayerController.instance.OnPressDash();
         }
