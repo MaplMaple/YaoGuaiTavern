@@ -45,5 +45,9 @@ public class InputManager : MonoBehaviour
         {
             PlayerController.instance.OnPressDash();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            PlayerController.instance.RespawnAtNearestCheckpoint();
+        }
     }
 }

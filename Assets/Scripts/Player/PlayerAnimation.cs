@@ -128,6 +128,8 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetFloat("velocityY", rb.velocity.y);
         anim.SetBool("isGround", physicsCheck.IsGround);
         anim.SetInteger("attackState", (int)playerController.attackState);
+        anim.SetBool("isAttacking", playerController.isAttacking);
+        anim.SetBool("isHit", playerController.isHit);
         anim.SetBool("isDashing", playerController.isDashing);
         anim.SetBool("isHoldingWall", playerController.wallHoldingState != EWallHoldingState.None);
         anim.SetBool("isBeingHit", playerController.isBeingHit);

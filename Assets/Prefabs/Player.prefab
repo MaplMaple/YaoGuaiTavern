@@ -427,39 +427,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ecc0aaa00a7e3e4093b5ea9872a1100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  horziontalMoveSpeed: 10
+  normalGravityScale: 3.5
   groundJumpVelocity: 15
+  doubleJumpVelocity: 15
   bounceVelocity: 12
   wallJumpHorizontalVelocity: 10
   wallJumpVerticalVelocity: 15
-  doubleJumpVelocity: 15
-  horziontalMoveSpeed: 10
+  wallHoldingGravityScale: 1.5
   dashSpeed: 25
   dashDuration: 0.2
-  attackInterval: 0.4
-  normalGravityScale: 3.5
-  wallHoldingGravityScale: 1.5
   dashGravityScale: 0
-  damagedVelocity: {x: 10, y: 10}
-  hitPauseTime: 0.1
-  invincibleTime: 0.5
-  knockbackDuration: 0.3
-  attackState: 0
-  isBeingHit: 0
-  isInvincible: 0
-  showAttackGizmos: 1
+  attackInterval: 0.4
   attackEffect: {fileID: 112449244410980289}
   attackCenter: {fileID: 8938116891921257159}
   attackLayer:
     serializedVersion: 2
     m_Bits: 256
+  showAttackGizmos: 1
+  damagedVelocity: {x: 10, y: 10}
+  hitPauseTime: 0.1
+  invincibleTime: 0.5
+  knockbackDuration: 0.3
   canDoubleJump: 1
   canDash: 1
   canWallHold: 1
+  unlockCheckpointDistance: 20
   inputDirection: {x: 0, y: 0}
+  attackState: 0
+  isBeingHit: 0
+  isInvincible: 0
+  isDashing: 0
   jumpState: 0
   wallHoldingState: 0
   dashState: 0
-  isDashing: 0
 --- !u!114 &3069202409130028034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,6 +480,8 @@ MonoBehaviour:
   holdableWallLayer:
     serializedVersion: 2
     m_Bits: 64
+  climbableWallTag: ClimbableWall
+  useTagFilter: 1
   bottomOffsets:
   - {x: 0, y: 0}
   leftOffsets:
