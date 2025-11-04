@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
     #region 公共状态
     public Vector2 inputDirection;
     public EAttackState attackState = EAttackState.Idle;
+    public bool isAttacking = false;
+    public bool isHit = false;
     public bool isBeingHit = false;
     public bool isInvincible = false;
     public bool isDashing = false;
@@ -520,6 +522,16 @@ public class PlayerController : MonoBehaviour
         ProcessAttackHits(hitboxCenter);
         CreateAttackEffect(attackState, hitboxCenter);
         RecordAttackGizmos(hitboxCenter);
+        
+        // 启动攻击动画标记
+        SetAttackingState().Forget();
+    }
+    
+    private async UniTask SetAttackingState()
+    {
+        isAttacking = true;
+        await UniTask.Delay(150); // 0.2秒
+        isAttacking = false;
     }
 
     private void DetermineAttackDirection()
@@ -660,6 +672,7 @@ public class PlayerController : MonoBehaviour
 
     private async UniTask TakeDamage(Vector2 attackerPosition)
     {
+        isHit = true;
         isBeingHit = true;
         isInvincible = true;
         
@@ -667,7 +680,11 @@ public class PlayerController : MonoBehaviour
         ApplyKnockbackVelocity(attackerPosition);
         await ApplyHitPause();
         
-        ApplyKnockback().Forget();
+        // 等待击退完成
+        await ApplyKnockback();
+        
+        // 击退结束后，isHit 设置为 false
+        isHit = false;
         
         await UniTask.Delay(200);
         isBeingHit = false;
@@ -943,6 +960,8 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         
         // 重置状态
+        isAttacking = false;
+        isHit = false;
         isBeingHit = false;
         isInvincible = false;
         isInKnockback = false;
