@@ -2789,7 +2789,7 @@ Tilemap:
       - {fileID: -1235853936, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 1918509905, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 19753248, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
-      m_AnimationSpeed: 7
+      m_AnimationSpeed: 7.0000005
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -30, y: 18, z: 0}
@@ -15705,6 +15705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6445eced51f68674cb902e94a3c15ee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFatal: 0
   _hitAudio: {fileID: 0}
   _hitEffect: {fileID: 0}
 --- !u!1 &2100870790
@@ -16159,11 +16160,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 440289897630036703, guid: 8cb7e6ae7ca7abd48b30bb604a8c1f38, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.33
+      value: -46.29
       objectReference: {fileID: 0}
     - target: {fileID: 440289897630036703, guid: 8cb7e6ae7ca7abd48b30bb604a8c1f38, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.08
+      value: 10.62
       objectReference: {fileID: 0}
     - target: {fileID: 440289897630036703, guid: 8cb7e6ae7ca7abd48b30bb604a8c1f38, type: 3}
       propertyPath: m_LocalPosition.z
