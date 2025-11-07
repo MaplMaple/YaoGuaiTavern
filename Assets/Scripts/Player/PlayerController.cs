@@ -368,6 +368,9 @@ public class PlayerController : MonoBehaviour
 
     private void TryStartHoldingWall()
     {
+        // 只有在垂直速度<=0时才能进入爬墙状态（即下落或静止时）
+        if (rb.velocity.y > 0) return;
+        
         if (physicsCheck.IsLeftWall && inputDirection.x < 0)
         {
             StartHoldingWall(EWallHoldingState.Left);
