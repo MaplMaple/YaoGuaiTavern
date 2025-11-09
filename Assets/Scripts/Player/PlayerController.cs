@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
         UpdateVisualEffects();
         UpdateGizmosTimer();
         UpdateCheckpointDetection();
-        DebugLogStates();
+        // DebugLogStates();
     }
 
     private void FixedUpdate()

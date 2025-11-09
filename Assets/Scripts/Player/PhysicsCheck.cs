@@ -140,7 +140,7 @@ public class PhysicsCheck : MonoBehaviour
             IsRightWall = false;
         }
 
-        Debug.Log($"IsLeftWall: {IsLeftWall}, IsRightWall: {IsRightWall}");
+        // Debug.Log($"IsLeftWall: {IsLeftWall}, IsRightWall: {IsRightWall}");
     }
 
     public bool Check(Vector2 offset, LayerMask layerMask)

@@ -97,7 +97,7 @@ namespace Doublsb.Dialog
             }
         }
 
-        public string[] _emotion = new string[] { "Normal" };
+        public string[] _emotion = new string[] {};
         public Sprite[] _sprite;
 
         //================================================
