@@ -7,8 +7,22 @@ using Cysharp.Threading.Tasks;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
+    public bool isInputEnabled = true;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    public void SetInputEnabled(bool enabled)
+    {
+        isInputEnabled = enabled;
+    }
+
     private void Update()
     {
+        if (!isInputEnabled) return;
         if (PlayerController.instance == null) return;
         int horizontalMoveInput = 0;
         int verticalMoveInput = 0;
