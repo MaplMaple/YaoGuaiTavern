@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Doublsb.Dialog;
+using UnityEngine.SceneManagement;
 
 public class EndScenePickup : MonoBehaviour
 {
@@ -19,10 +20,9 @@ public class EndScenePickup : MonoBehaviour
             InputManager.instance.SetInputEnabled(false);
             PlayerController.instance.inputDirection = Vector2.zero;
             var dialogTexts = new List<DialogData>();
-            dialogTexts.Add(new DialogData("游戏结束，感谢游玩Demo内容。", callback: () => InputManager.instance.SetInputEnabled(true)));
+            dialogTexts.Add(new DialogData("游戏结束，感谢游玩Demo内容。", callback: () => { SceneManager.LoadScene("MainMenu"); }));
             DialogManager.Show(dialogTexts);
             isTriggered = true;
-            GetComponent<SpriteRenderer>().color = Color.blue;
         }
     }
 }

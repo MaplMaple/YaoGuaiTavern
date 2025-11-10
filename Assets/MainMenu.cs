@@ -30,7 +30,7 @@ public class MainMenu : MonoBehaviour
                 SelectDown();
             }
             // enter or click to select current
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Z))
             {
                 Select();
             }

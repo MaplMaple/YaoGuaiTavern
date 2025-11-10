@@ -73,6 +73,18 @@ namespace Doublsb.Dialog
         private Coroutine _printingRoutine;
 
         //================================================
+        //Unity Methods
+        //================================================
+        private void Update()
+        {
+            // Check if Z key is pressed
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Click_Window();
+            }
+        }
+
+        //================================================
         //Public Method
         //================================================
         #region Show & Hide
@@ -318,7 +330,7 @@ namespace Doublsb.Dialog
 
         private IEnumerator _waitInput()
         {
-            while (!Input.GetMouseButtonDown(0)) yield return null;
+            while (!Input.GetMouseButtonDown(0) && !Input.GetKeyDown(KeyCode.Z)) yield return null;
             _currentDelay = _lastDelay;
         }
 
