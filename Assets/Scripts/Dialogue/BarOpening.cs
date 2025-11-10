@@ -59,7 +59,7 @@ public class BarOpening : MonoBehaviour
         dialogTexts.Add(new DialogData(originalString: "（等等，她是...）", character: "主角", callback: () => { PlayerWalkToFridge().Forget(); }));
         dialogTexts.Add(new DialogData(originalString: "我脑子里的问题现在越来越多了。说说吧，为什么你会在这里？木樨呢？", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "哼，你还是跟以前一样，老同学多年不见，不打声招呼就算了，态度还这么冷淡……", character: "???"));
-        dialogTexts.Add(new DialogData(originalString: "没错，眼前这位名叫阿枫的人，她和木樨一样，是我在学生时代的好友，毕业后我们的关系依然很好。不过，此时此刻，为什么她会在木樨的酒馆里呢？", character: "主角"));
+        dialogTexts.Add(new DialogData(originalString: "（眼前这位名叫阿枫的人，和木樨一样，是我在学生时代的好友，毕业后我们的关系依然很好。不过，此时此刻，为什么她会在木樨的酒馆里呢？）", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "/emote:Blink2/说起来，为什么会在这，这句话该我问你才对。我可比你先到。怎么，木樨没告诉你，她会邀请别的客人吗？", character: "阿枫"));
         dialogTexts.Add(new DialogData(originalString: "很抱歉，她给我寄了一封信。看看这封信，除了这个地址外，就是大段大段的我看不懂的文字。你知道些什么吗？", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "/emote:Normal/我知道的……只有木樨失踪了。", character: "阿枫"));
