@@ -612,11 +612,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 58
+    m_Font: {fileID: 12800000, guid: 6632d727e904bce46820405d17259548, type: 3}
+    m_FontSize: 32
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 5
+    m_MinSize: 3
     m_MaxSize: 300
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -624,7 +624,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7279\u522B\u9E23\u8C22\uFF1ATeam GoodNight"
+  m_Text: "\u7279\u522B\u9E23\u8C22\nTeam GoodNight\n\u97F3\u4E50\u6765\u6E90\nYuppie
+    Psycho \nBy Garoad\nKatana Zero \nBy ludoWic\nMilk outside a bag of milk outside
+    a bag of milk\nBy Nikita Kryukov\n\u8FD8\u6709Unity\u8D44\u6E90\u5546\u5E97\u7684\u97F3\u6548\u63D0\u4F9B\u8005\u4EEC\n\n\u611F\u8C22\u6240\u6709\u4E00\u76F4\u4EE5\u6765\u652F\u6301\u548C\u5E2E\u52A9\u6211\u7684\u670B\u53CB\u3002\nBy
+    \u82B1\u96E8 2025.11.12\n"
 --- !u!222 &904921352
 CanvasRenderer:
   m_ObjectHideFlags: 0

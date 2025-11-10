@@ -37696,7 +37696,7 @@ Tilemap:
       - {fileID: -1130926522, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 1828243363, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: -10571369, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
-      m_AnimationSpeed: 7.0000005
+      m_AnimationSpeed: 7
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -31, y: 19, z: 0}
@@ -83144,7 +83144,7 @@ PrefabInstance:
     - target: {fileID: 4094011683009168357, guid: d536fa71dd00cf349a228e41212ace48, type: 3}
       propertyPath: m_FontData.m_Font
       value: 
-      objectReference: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+      objectReference: {fileID: 12800000, guid: 6632d727e904bce46820405d17259548, type: 3}
     - target: {fileID: 4094011683184476936, guid: d536fa71dd00cf349a228e41212ace48, type: 3}
       propertyPath: m_Name
       value: DialogAsset
