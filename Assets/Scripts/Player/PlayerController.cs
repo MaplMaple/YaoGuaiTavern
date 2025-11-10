@@ -13,47 +13,53 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region 公共参数配置
-    
+
     [Header("移动参数")]
     public float horziontalMoveSpeed;
     public float normalGravityScale;
-    
+
     [Header("跳跃参数")]
     public float groundJumpVelocity;
     public float doubleJumpVelocity;
     public float bounceVelocity;
-    
+
     [Header("爬墙参数")]
     public float wallJumpHorizontalVelocity;
     public float wallJumpVerticalVelocity;
     public float wallHoldingGravityScale;
-    
+
     [Header("冲刺参数")]
     public float dashSpeed = 25f;
     public float dashDuration = 0.2f;
     public float dashGravityScale = 0f;
-    
+
     [Header("攻击参数")]
     public float attackInterval;
     public GameObject attackEffect;
     public Transform attackCenter;
     public LayerMask attackLayer;
     public bool showAttackGizmos = true;
-    
+
     [Header("受击参数")]
     public Vector2 damagedVelocity = new Vector2(10f, 10f);
     public float hitPauseTime = 0.1f;
     public float invincibleTime = 0.5f;
     public float knockbackDuration = 0.3f;
-    
+
     [Header("能力开关")]
     public bool canDoubleJump = true;
     public bool canDash = true;
     public bool canWallHold = true;
-    
+
     [Header("存档点设置")]
     public float unlockCheckpointDistance = 2f;
-    
+
+    #endregion
+
+    #region 特效物体
+    public GameObject jumpEffect;
+    public GameObject doubleJumpEffect;
+    public GameObject dashEffect;
     #endregion
 
     #region 公共状态
@@ -76,47 +82,47 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region 私有状态变量
-    
+
     // 移动相关
     private float faceDirection = 1;
-    
+
     // 跳跃相关
     private const float releaseJumpSpeedDeclineRate = 0.8f;
-    
+
     // 爬墙相关
     private const float wallJumpDuration = 0.15f;
     private bool isAfterWallJumping = false;
-    
+
     // 冲刺相关
     private float dashDirection = 1f;
-    
+
     // 攻击相关
     private float attackTimer = 0;
     private readonly Vector2 attackHitboxSizeHorizontal = new Vector2(5.0f, 2.0f);
     private readonly Vector2 attackHitboxSizeVertical = new Vector2(2.0f, 5.0f);
-    
+
     // 受击相关
     private bool isInKnockback = false;
-    
+
     // 视觉效果相关
     private float invincibleBlinkTimer = 0f;
     private const float invincibleBlinkInterval = 0.1f;
     private bool isVisibleDuringInvincible = true;
     private Color originalColor;
     private Color knockbackDebugColor = Color.red;
-    
+
     // Gizmos绘制相关
     private bool shouldDrawGizmos = false;
     private Vector2 gizmosHitboxCenter;
     private Vector2 gizmosHitboxSize;
     private float gizmosStartTime;
     private const float gizmosDrawDuration = 1.0f;
-    
+
     // 异步操作取消令牌
     private CancellationTokenSource wallJumpCancellationTokenSource = null;
     private CancellationTokenSource dashCancellationTokenSource = null;
     private CancellationTokenSource knockbackCancellationTokenSource = null;
-    
+
     #endregion
 
     #region Unity 生命周期
@@ -217,7 +223,7 @@ public class PlayerController : MonoBehaviour
     public void OnPressJump()
     {
         if (isBeingHit) return;
-        
+
         if (jumpState == EJumpState.Ground)
         {
             PerformGroundJump();
@@ -244,7 +250,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isBeingHit) return;
         if (attackState != EAttackState.Idle) return;
-        
+
         PerformAttack();
     }
 
@@ -253,7 +259,7 @@ public class PlayerController : MonoBehaviour
         if (isBeingHit) return;
         if (wallHoldingState != EWallHoldingState.None) return;
         if (!canDash || dashState != EDashState.Charged || isDashing) return;
-        
+
         PerformDash().Forget();
     }
 
@@ -269,7 +275,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateMove()
     {
         if (isBeingHit) return;
-        
+
         UpdateFaceDirectionFromInput();
         ApplyMovementVelocity();
     }
@@ -306,12 +312,14 @@ public class PlayerController : MonoBehaviour
     {
         jumpState = EJumpState.AfterFirstJumpInAir;
         rb.velocity = new Vector2(rb.velocity.x, groundJumpVelocity);
+        CreateJumpEffect();
     }
 
     private void PerformDoubleJump()
     {
         jumpState = EJumpState.ExhaustedInAir;
         rb.velocity = new Vector2(rb.velocity.x, doubleJumpVelocity);
+        CreateDoubleJumpEffect();
     }
 
     public void HitBounce()
@@ -320,9 +328,9 @@ public class PlayerController : MonoBehaviour
         {
             dashState = EDashState.Charged;
         }
-        
-        if (jumpState == EJumpState.AfterFirstJumpInAir || 
-            jumpState == EJumpState.AfterBouncingInAir || 
+
+        if (jumpState == EJumpState.AfterFirstJumpInAir ||
+            jumpState == EJumpState.AfterBouncingInAir ||
             jumpState == EJumpState.ExhaustedInAir)
         {
             rb.velocity = new Vector2(rb.velocity.x, bounceVelocity);
@@ -346,7 +354,7 @@ public class PlayerController : MonoBehaviour
             ResetWallHoldingIfActive();
             return;
         }
-        
+
         if (wallHoldingState == EWallHoldingState.None && !isAfterWallJumping)
         {
             TryStartHoldingWall();
@@ -370,7 +378,7 @@ public class PlayerController : MonoBehaviour
     {
         // 只有在垂直速度<=0时才能进入爬墙状态（即下落或静止时）
         if (rb.velocity.y > 0) return;
-        
+
         if (physicsCheck.IsLeftWall && inputDirection.x < 0)
         {
             StartHoldingWall(EWallHoldingState.Left);
@@ -383,7 +391,7 @@ public class PlayerController : MonoBehaviour
 
     private void TryStopHoldingWall()
     {
-        if (!((physicsCheck.IsLeftWall && inputDirection.x <= 0) || 
+        if (!((physicsCheck.IsLeftWall && inputDirection.x <= 0) ||
               (physicsCheck.IsRightWall && inputDirection.x >= 0)))
         {
             StopHoldingWall();
@@ -396,7 +404,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(0, 0);
         jumpState = EJumpState.HoldingWall;
         rb.gravityScale = wallHoldingGravityScale;
-        
+
         if (canDash)
         {
             dashState = EDashState.Charged;
@@ -427,7 +435,7 @@ public class PlayerController : MonoBehaviour
             jumpState = EJumpState.AfterFirstJumpInAir;
             rb.velocity = new Vector2(-wallJumpHorizontalVelocity, wallJumpVerticalVelocity);
         }
-        
+
         AfterWallJumping().Forget();
     }
 
@@ -464,7 +472,7 @@ public class PlayerController : MonoBehaviour
         if (isDashing) return;
 
         InitializeDash();
-        
+
         float originalGravity = rb.gravityScale;
         rb.gravityScale = dashGravityScale;
 
@@ -491,6 +499,7 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         dashState = EDashState.Exhausted;
         dashDirection = faceDirection;
+        CreateDashEffect();
     }
 
     private void FinalizeDash(float originalGravity)
@@ -520,16 +529,16 @@ public class PlayerController : MonoBehaviour
     {
         DetermineAttackDirection();
         attackTimer = 0;
-        
+
         Vector2 hitboxCenter = GetAttackHitboxCenter(attackState);
         ProcessAttackHits(hitboxCenter);
         CreateAttackEffect(attackState, hitboxCenter);
         RecordAttackGizmos(hitboxCenter);
-        
+
         // 启动攻击动画标记
         SetAttackingState().Forget();
     }
-    
+
     private async UniTask SetAttackingState()
     {
         isAttacking = true;
@@ -556,7 +565,7 @@ public class PlayerController : MonoBehaviour
     private void ProcessAttackHits(Vector2 hitboxCenter)
     {
         bool hasHitSomething = false;
-        
+
         foreach (Collider2D hitCollider in GetAttackHit(hitboxCenter, attackState))
         {
             if (hitCollider != null && hitCollider.TryGetComponent(out IHitableObject hitableObject))
@@ -565,7 +574,7 @@ public class PlayerController : MonoBehaviour
                 hasHitSomething = true;
             }
         }
-        
+
         // 如果是向下攻击并且击中了东西，触发弹跳
         if (hasHitSomething && attackState == EAttackState.AttackDown)
         {
@@ -577,7 +586,7 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalOffset = 2.0f;
         float verticalOffset = 2.0f;
-        
+
         Vector2 attackOffset = attackState switch
         {
             EAttackState.AttackHorizontal => new Vector2(faceDirection * horizontalOffset, 0),
@@ -585,17 +594,17 @@ public class PlayerController : MonoBehaviour
             EAttackState.AttackDown => new Vector2(0, -verticalOffset),
             _ => Vector2.zero
         };
-        
+
         return attackCenter.position + (Vector3)attackOffset;
     }
 
     private Collider2D[] GetAttackHit(Vector2 hitboxCenter, EAttackState attackState)
     {
         Collider2D[] hitColliders = new Collider2D[10];
-        Vector2 hitboxSize = (attackState == EAttackState.AttackHorizontal) 
-            ? attackHitboxSizeHorizontal 
+        Vector2 hitboxSize = (attackState == EAttackState.AttackHorizontal)
+            ? attackHitboxSizeHorizontal
             : attackHitboxSizeVertical;
-            
+
         Physics2D.OverlapBoxNonAlloc(hitboxCenter, hitboxSize, 0, hitColliders, attackLayer);
         return hitColliders;
     }
@@ -608,7 +617,7 @@ public class PlayerController : MonoBehaviour
             EAttackState.AttackDown => Quaternion.Euler(0, 0, -90 * faceDirection),
             _ => Quaternion.identity
         };
-        
+
         GameObject attackEffectObj = Instantiate(attackEffect, hitboxCenter, attackRotation);
         attackEffectObj.transform.localScale = new Vector3(faceDirection, 1, 1);
         attackEffectObj.SetActive(true);
@@ -660,10 +669,10 @@ public class PlayerController : MonoBehaviour
     public void OnTakeDamage(Vector2 attackerPosition)
     {
         if (isInvincible || isBeingHit) return;
-        
+
         TakeDamage(attackerPosition).Forget();
     }
-    
+
     /// <summary>
     /// 玩家受到致命伤害（直接送回存档点）
     /// </summary>
@@ -678,20 +687,20 @@ public class PlayerController : MonoBehaviour
         isHit = true;
         isBeingHit = true;
         isInvincible = true;
-        
+
         CancelDashIfActive();
         ApplyKnockbackVelocity(attackerPosition);
         await ApplyHitPause();
-        
+
         // 等待击退完成
         await ApplyKnockback();
-        
+
         // 击退结束后，isHit 设置为 false
         isHit = false;
-        
+
         await UniTask.Delay(200);
         isBeingHit = false;
-        
+
         await UniTask.Delay((int)(invincibleTime * 1000));
         isInvincible = false;
     }
@@ -713,7 +722,7 @@ public class PlayerController : MonoBehaviour
         {
             knockbackDirection = -faceDirection;
         }
-        
+
         rb.velocity = new Vector2(damagedVelocity.x * knockbackDirection, damagedVelocity.y);
     }
 
@@ -731,10 +740,10 @@ public class PlayerController : MonoBehaviour
             knockbackCancellationTokenSource?.Cancel();
             knockbackCancellationTokenSource?.Dispose();
         }
-        
+
         knockbackCancellationTokenSource = new CancellationTokenSource();
         isInKnockback = true;
-        
+
         try
         {
             await UniTask.Delay((int)(knockbackDuration * 1000), cancellationToken: knockbackCancellationTokenSource.Token);
@@ -748,30 +757,30 @@ public class PlayerController : MonoBehaviour
             isInKnockback = false;
         }
     }
-    
+
     private async UniTask TakeFatalDamage(Vector2 attackerPosition)
     {
         // 短暂暂停游戏，给玩家反馈
         Time.timeScale = 0f;
         await UniTask.Delay((int)(hitPauseTime * 1000), ignoreTimeScale: true);
         Time.timeScale = 1f;
-        
+
         // 等待 0.2 秒后开始处理
         await UniTask.Delay(200);
-        
+
         // 开始屏幕渐变效果（0.4秒）
         if (ScreenFade.Instance != null)
         {
             // 启动渐变效果（不等待完成）
             ScreenFade.Instance.FadeOutAndIn(0.4f).Forget();
-            
+
             // 等待渐变到黑色（0.2秒，即总时长的一半）
             await UniTask.Delay(200);
         }
-        
+
         // 在黑屏时回到存档点
         RespawnAtNearestCheckpoint();
-        
+
         Debug.Log("玩家受到致命伤害，回到存档点");
     }
 
@@ -782,7 +791,7 @@ public class PlayerController : MonoBehaviour
     private void UpdateVisualEffects()
     {
         if (spriteRenderer == null) return;
-        
+
         UpdateInvincibleBlink();
         UpdateKnockbackDebugColor();
     }
@@ -889,6 +898,46 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    #region 特效生成
+
+    /// <summary>
+    /// 创建跳跃特效
+    /// </summary>
+    private void CreateJumpEffect()
+    {
+        if (jumpEffect != null)
+        {
+            GameObject effect = Instantiate(jumpEffect, position: jumpEffect.transform.position, rotation: Quaternion.identity);
+            effect.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// 创建二段跳特效
+    /// </summary>
+    private void CreateDoubleJumpEffect()
+    {
+        if (doubleJumpEffect != null)
+        {
+            GameObject effect = Instantiate(doubleJumpEffect, position: doubleJumpEffect.transform.position, rotation: Quaternion.identity, parent: transform);
+            effect.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// 创建冲刺特效
+    /// </summary>
+    private void CreateDashEffect()
+    {
+        if (dashEffect != null)
+        {
+            GameObject effect = Instantiate(dashEffect, position: dashEffect.transform.position, rotation: Quaternion.identity, parent: transform);
+            effect.SetActive(true);
+        }
+    }
+
+    #endregion
+
     #region 存档点系统
 
     /// <summary>
@@ -897,10 +946,10 @@ public class PlayerController : MonoBehaviour
     private void UpdateCheckpointDetection()
     {
         if (CheckpointManager.Instance == null) return;
-        
+
         // 获取所有检查点
         Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(transform.position, unlockCheckpointDistance);
-        
+
         foreach (var collider in nearbyColliders)
         {
             Checkpoint checkpoint = collider.GetComponent<Checkpoint>();
@@ -921,9 +970,9 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("CheckpointManager 未找到！");
             return;
         }
-        
+
         Checkpoint nearestCheckpoint = CheckpointManager.Instance.GetNearestUnlockedCheckpoint(transform.position);
-        
+
         if (nearestCheckpoint != null)
         {
             RespawnAtCheckpoint(nearestCheckpoint);
@@ -944,13 +993,13 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("无法在未解锁的检查点重生！");
             return;
         }
-        
+
         // 重置玩家状态
         ResetPlayerState();
-        
+
         // 移动到检查点位置
         transform.position = checkpoint.GetRespawnPosition();
-        
+
         Debug.Log($"玩家在检查点 {checkpoint.checkpointId} 重生");
     }
 
@@ -961,7 +1010,7 @@ public class PlayerController : MonoBehaviour
     {
         // 重置速度
         rb.velocity = Vector2.zero;
-        
+
         // 重置状态
         isAttacking = false;
         isHit = false;
@@ -970,36 +1019,36 @@ public class PlayerController : MonoBehaviour
         isInKnockback = false;
         isDashing = false;
         isAfterWallJumping = false;
-        
+
         // 重置跳跃和爬墙状态
         jumpState = EJumpState.Ground;
         wallHoldingState = EWallHoldingState.None;
-        
+
         // 重置攻击状态
         attackState = EAttackState.Idle;
         attackTimer = 0;
-        
+
         // 重置冲刺充能
         if (canDash)
         {
             dashState = EDashState.Charged;
         }
-        
+
         // 重置重力
         rb.gravityScale = normalGravityScale;
-        
+
         // 取消所有异步操作
         wallJumpCancellationTokenSource?.Cancel();
         dashCancellationTokenSource?.Cancel();
         knockbackCancellationTokenSource?.Cancel();
-        
+
         // 恢复可见性和颜色
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
             spriteRenderer.color = originalColor;
         }
-        
+
         // 恢复时间流速
         Time.timeScale = 1f;
     }

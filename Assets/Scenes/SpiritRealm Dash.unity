@@ -30966,7 +30966,7 @@ Tilemap:
       - {fileID: -1235853936, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 1918509905, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
       - {fileID: 19753248, guid: c7299e7d8dbcbaf429ee29c275b49072, type: 3}
-      m_AnimationSpeed: 7.0000005
+      m_AnimationSpeed: 7
       m_AnimationTimeOffset: 0
       m_Flags: 0
   - first: {x: -30, y: 18, z: 0}
