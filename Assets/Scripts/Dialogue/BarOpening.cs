@@ -135,6 +135,6 @@ public class BarOpening : MonoBehaviour
 
     private void LoadScene()
     {
-        SceneManager.LoadScene("SpiritRealm Dash");
+        SceneManager.LoadScene("PaoPao Frontdoor");
     }
 }

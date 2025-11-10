@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestSpiritRealmDoublejuimp.unity
     guid: fc399f3e45238d44f8836212f3d6e4ec
+  - enabled: 1
+    path: Assets/Scenes/PaoPao Frontdoor.unity
+    guid: a3f11351512c8e644a20c66146f2f631
   m_configObjects: {}
