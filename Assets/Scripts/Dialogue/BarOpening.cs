@@ -29,10 +29,10 @@ public class BarOpening : MonoBehaviour
     private void PlayOpeningDialogue()
     {
         var dialogTexts = new List<DialogData>();
-        dialogTexts.Add(new DialogData(originalString: "几天前，我收到了我的朋友木樨发来的一封信件。", character: "信件"));
-        dialogTexts.Add(new DialogData(originalString: "虽然没有寄出者的信息，但是我很确信这是她寄来的，因为随信而来的还有我在学生时代赠送给她的护身符。", character: "信件"));
-        dialogTexts.Add(new DialogData(originalString: "信的内容几乎完全由我看不懂的文字进行书写，但落款处留下了一个地址，指向雨城的一家小酒馆。", character: "信件"));
-        dialogTexts.Add(new DialogData(originalString: "为了调查这封信以及木樨发这封信给我的原因，我启程前往雨城。至于木樨那边到底发生了什么事，也许只有我到达酒馆之后才能知道了。", callback: () => { FadeInPlayer().Forget(); }, character: "信件"));
+        dialogTexts.Add(new DialogData(originalString: "几天前，我收到了我的朋友木樨发来的一封信件。", character: "黑屏"));
+        dialogTexts.Add(new DialogData(originalString: "虽然没有寄出者的信息，但是我很确信这是她寄来的，因为随信而来的还有我在学生时代赠送给她的护身符。", character: "黑屏"));
+        dialogTexts.Add(new DialogData(originalString: "信的内容几乎完全由我看不懂的文字进行书写，但落款处留下了一个地址，指向雨城的一家小酒馆。", character: "黑屏"));
+        dialogTexts.Add(new DialogData(originalString: "为了调查这封信以及木樨发这封信给我的原因，我启程前往雨城。至于木樨那边到底发生了什么事，也许只有我到达酒馆之后才能知道了。", callback: () => { FadeInPlayer().Forget(); }, character: "黑屏"));
         DialogManager.Show(dialogTexts);
     }
 
@@ -61,7 +61,9 @@ public class BarOpening : MonoBehaviour
         dialogTexts.Add(new DialogData(originalString: "哼，你还是跟以前一样，老同学多年不见，不打声招呼就算了，态度还这么冷淡……", character: "???"));
         dialogTexts.Add(new DialogData(originalString: "（眼前这位名叫阿枫的人，和木樨一样，是我在学生时代的好友，毕业后我们的关系依然很好。不过，此时此刻，为什么她会在木樨的酒馆里呢？）", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "/emote:Blink2/说起来，为什么会在这，这句话该我问你才对。我可比你先到。怎么，木樨没告诉你，她会邀请别的客人吗？", character: "阿枫"));
-        dialogTexts.Add(new DialogData(originalString: "很抱歉，她给我寄了一封信。看看这封信，除了这个地址外，就是大段大段的我看不懂的文字。你知道些什么吗？", character: "主角"));
+        dialogTexts.Add(new DialogData(originalString: "很抱歉，她只给我寄了一封信。", character: "主角"));
+        dialogTexts.Add(new DialogData(originalString: "（我拿出信件给阿枫观看）", character: "信件"));
+        dialogTexts.Add(new DialogData(originalString: "看看这封信，除了这个地址外，就是大段大段的我看不懂的文字。你知道些什么吗？", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "/emote:Normal/我知道的……只有木樨失踪了。", character: "阿枫"));
         dialogTexts.Add(new DialogData(originalString: "什么！？", character: "主角"));
         dialogTexts.Add(new DialogData(originalString: "有好几个月了……我给她发消息不回，打电话不接，酒馆也一直关门。就在我以为她真的人间蒸发的时候，也收到了一封和她寄给你类似的信。", character: "阿枫"));

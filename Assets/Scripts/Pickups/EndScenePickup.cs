@@ -20,7 +20,7 @@ public class EndScenePickup : MonoBehaviour
             InputManager.instance.SetInputEnabled(false);
             PlayerController.instance.inputDirection = Vector2.zero;
             var dialogTexts = new List<DialogData>();
-            dialogTexts.Add(new DialogData("游戏结束，感谢游玩Demo内容。", callback: () => { SceneManager.LoadScene("MainMenu"); }));
+            dialogTexts.Add(new DialogData("游戏结束，感谢你的游玩。", callback: () => { SceneManager.LoadScene("MainMenu"); }));
             DialogManager.Show(dialogTexts);
             isTriggered = true;
         }

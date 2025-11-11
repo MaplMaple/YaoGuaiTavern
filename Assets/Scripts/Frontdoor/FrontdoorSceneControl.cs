@@ -26,8 +26,8 @@ public class FrontdoorSceneControl : MonoBehaviour
         InputManager.instance.SetInputEnabled(false);
         await FadeInPlayer();
         var dialogTexts = new List<DialogData>();
-        dialogTexts.Add(new DialogData("嗯...看样子去楼顶的路被堵住了，得想办法绕过去。", "主角"));
-        dialogTexts.Add(new DialogData("先往左边走吧。", "主角", callback: () => InputManager.instance.SetInputEnabled(true)));
+        dialogTexts.Add(new DialogData("奇怪…看样子右边去楼顶的路被人堵住了，得想办法绕过去。", "主角"));
+        dialogTexts.Add(new DialogData("先往左边走走看吧。", "主角", callback: () => InputManager.instance.SetInputEnabled(true)));
         DialogManager.Show(dialogTexts);
     }
 
